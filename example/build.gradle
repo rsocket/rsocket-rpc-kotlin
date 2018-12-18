@@ -1,0 +1,26 @@
+plugins {
+    id 'idea'
+    id 'kotlin'
+    id 'application'
+}
+
+description = 'Example of using RSocket-kotlin RPC Library'
+
+application {
+    mainClassName = "io.rsocket.rpc.kotlin.example.RpcExample"
+}
+
+dependencies {
+    implementation project(":example-idl")
+    implementation 'io.rsocket.kotlin:rsocket-transport-okhttp'
+    implementation 'io.rsocket.kotlin:rsocket-transport-netty'
+    implementation 'org.slf4j:slf4j-api'
+    implementation 'org.slf4j:slf4j-simple'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.6"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.6"
+}
