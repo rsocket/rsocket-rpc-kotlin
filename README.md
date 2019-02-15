@@ -1,5 +1,5 @@
 # RSocket RPC - Kotlin
-[![Build Status](https://travis-ci.org/rsocket/rsocket-rpc-kotlin.svg?branch=master)](https://travis-ci.org/rsocket/rsocket-rpc-kotlin)
+[![Build Status](https://travis-ci.com/rsocket/rsocket-rpc-kotlin.svg?branch=master)](https://travis-ci.com/rsocket/rsocket-rpc-kotlin)
 
 The standard [RSocket](http://rsocket.io) RPC implementation based on [RSocket-kotlin](https://github.com/rsocket/rsocket-kotlin) and [RxJava2](https://github.com/ReactiveX/RxJava).  
 RSocket is binary application protocol with pluggable transports which models all communication as [Reactive Streams](https://github.com/reactive-streams/reactive-streams-jvm/blob/master/README.md) of messages multiplexed over a single network connection, and never synchronously blocks while waiting for a response.
