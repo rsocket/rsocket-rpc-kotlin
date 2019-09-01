@@ -1,7 +1,7 @@
 import static org.apache.tools.ant.taskdefs.condition.Os.*
 
 plugins {
-    id 'com.google.protobuf' version '0.8.7'
+    id 'com.google.protobuf'
     id 'idea'
     id 'kotlin'
 }

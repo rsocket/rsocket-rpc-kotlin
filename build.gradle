@@ -14,48 +14,29 @@
  * limitations under the License.
  */
 
-buildscript {
-    repositories {
-        jcenter()
-    }
-}
-
 plugins {
     // declare before any other plugin
-    id 'com.google.osdetector' version '1.4.0'
-    id 'com.gradle.build-scan' version '1.15.1'
-    id 'com.github.johnrengelman.shadow' version '2.0.1' apply false
-    id "org.jetbrains.kotlin.jvm" version "1.3.11" apply false
-    id 'io.spring.dependency-management' version '1.0.6.RELEASE' apply false
+    id 'com.google.osdetector'
+    id 'com.gradle.build-scan'
+    id 'com.github.johnrengelman.shadow' apply false
+    id "org.jetbrains.kotlin.jvm" apply false
+    id 'io.spring.dependency-management' apply false
 }
 
-apply from: 'publication.gradle'
-apply from: 'artifactory.gradle'
-apply from: 'bintray.gradle'
-
 buildScan {
-    licenseAgreementUrl = 'https://gradle.com/terms-of-service'
-    licenseAgree = 'yes'
+    termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+    termsOfServiceAgree = 'yes'
+}
+
+allprojects {
+    dependencyLocking {
+        lockAllConfigurations()
+    }
 }
 
 subprojects {
     apply plugin: 'java-library'
     apply plugin: 'io.spring.dependency-management'
-    apply plugin: 'maven-publish'
-
-    ext {
-        protobufVersion = '3.6.1'
-        kotlinStdlibVersion = '1.3.11'
-        nettyBufferVersion = '4.1.32.Final'
-        rsocketVersion = '0.9.6'
-        koptionalVersion = '1.6.0'
-        opentracingVersion = '0.31.0'
-        javaxInjectVersion = '1'
-        javaxAnnotationVersion = '1.3.2'
-        slfVersion ='1.7.25'
-        junit5Version = '5.1.0'
-        assertjVersion = '3.11.1'
-    }
 
     repositories {
         jcenter()
@@ -64,25 +45,26 @@ subprojects {
 
     dependencyManagement {
         dependencies {
-            dependency "javax.inject:javax.inject:${ext['javaxInjectVersion']}"
-            dependency "javax.annotation:javax.annotation-api:${ext['javaxAnnotationVersion']}"
-            dependency "io.netty:netty-buffer:${ext['nettyBufferVersion']}"
-            dependency "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${ext['kotlinStdlibVersion']}"
-            dependency "com.gojuno.koptional:koptional:${ext['koptionalVersion']}"
-            dependency "com.google.protobuf:protobuf-java:${ext['protobufVersion']}"
-            dependency "io.rsocket.kotlin:rsocket-core:${ext['rsocketVersion']}"
-            dependency "io.opentracing:opentracing-api:${ext['opentracingVersion']}"
-            dependency "org.slf4j:slf4j-api:${ext['slfVersion']}"
-            dependency "org.slf4j:slf4j-simple:${ext['slfVersion']}"
+            dependency "javax.inject:javax.inject:${javaxInjectVersion}"
+            dependency "javax.annotation:javax.annotation-api:${javaxAnnotationVersion}"
+            dependency "io.netty:netty-buffer:${nettyBufferVersion}"
+            dependency "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinStdlibVersion}"
+            dependency "com.gojuno.koptional:koptional:${koptionalVersion}"
+            dependency "com.google.protobuf:protobuf-java:${protobufVersion}"
+            dependency "com.google.protobuf:protoc:${protobufVersion}"
+            dependency "io.rsocket.kotlin:rsocket-core:${rsocketKotlinVersion}"
+            dependency "io.opentracing:opentracing-api:${opentracingVersion}"
+            dependency "org.slf4j:slf4j-api:${slfVersion}"
+            dependency "org.slf4j:slf4j-simple:${slfVersion}"
 
             /*testing*/
-            dependency "io.rsocket.kotlin:rsocket-transport-okhttp:${ext['rsocketVersion']}"
-            dependency "io.rsocket.kotlin:rsocket-transport-netty:${ext['rsocketVersion']}"
-            dependency "org.assertj:assertj-core:${ext['assertjVersion']}"
-            dependencySet(group: 'org.junit.jupiter', version: ext['junit5Version']) {
-                entry 'junit-jupiter-api'
-                entry 'junit-jupiter-engine'
-                entry 'junit-jupiter-params'
+            dependency "io.rsocket.kotlin:rsocket-transport-okhttp:${rsocketKotlinVersion}"
+            dependency "io.rsocket.kotlin:rsocket-transport-netty:${rsocketKotlinVersion}"
+            dependency "org.assertj:assertj-core:${assertjVersion}"
+            dependencySet(group: "org.junit.jupiter", version: "${junit5Version}") {
+                entry "junit-jupiter-api"
+                entry "junit-jupiter-engine"
+                entry "junit-jupiter-params"
             }
         }
     }
@@ -110,6 +92,6 @@ subprojects {
     }
 
     artifacts {
-        archives sourcesJar
+        archives sourcesJar, jar
     }
 }

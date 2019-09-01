@@ -17,11 +17,12 @@
 import static org.apache.tools.ant.taskdefs.condition.Os.*
 
 plugins {
-    id 'com.google.protobuf' version '0.8.7'
+    id 'com.google.protobuf'
     id 'idea'
     id 'kotlin'
-    id 'com.jfrog.artifactory' version '4.7.3'
-    id 'com.jfrog.bintray' version '1.8.4'
+    id 'com.jfrog.artifactory'
+    id 'com.jfrog.bintray'
+    id 'maven-publish'
 }
 
 description = 'RSocket-kotlin RPC Library'
@@ -71,7 +72,7 @@ protobuf {
     generatedFilesBaseDir = "${projectDir}/src/generated"
 
     protoc {
-        artifact = "com.google.protobuf:protoc:$protobufVersion"
+        artifact = "com.google.protobuf:protoc"
     }
     plugins {
 

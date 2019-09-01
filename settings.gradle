@@ -14,6 +14,20 @@
  * limitations under the License.
  */
 
+pluginManagement {
+    plugins {
+        id 'com.google.osdetector' version "${osDetectorPluginVersion}"
+        id 'com.gradle.build-scan' version "${buildScanPluginVersion}"
+        id 'com.github.johnrengelman.shadow' version "${shadowPluginVersion}"
+        id 'io.spring.dependency-management' version "${dependencyManagementPluginVersion}"
+        id 'com.jfrog.bintray' version "${bintrayPluginVersion}"
+        id 'com.jfrog.artifactory' version "${artifactoryPluginVersion}"
+        id 'org.jetbrains.kotlin.jvm' version "${kotlinPluginVersion}"
+        id "com.palantir.git-version" version "${gitPluginVersion}"
+        id "com.google.protobuf" version "${protobufPluginVersion}"
+    }
+}
+
 rootProject.name = 'rsocket-rpc-kotlin'
 include 'rsocket-rpc-protobuf-idl'
 include 'rsocket-rpc-protobuf'

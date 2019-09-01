@@ -2,6 +2,7 @@ plugins {
     id 'idea'
     id 'kotlin'
     id 'application'
+    id 'com.google.protobuf'
 }
 
 description = 'Example of using RSocket-kotlin RPC Library'
