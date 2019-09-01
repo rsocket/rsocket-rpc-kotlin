@@ -130,7 +130,7 @@ class RpcExample {
 
     class ClientAcceptor : ExampleService {
         companion object {
-            val logger = LoggerFactory.getLogger(ServerAcceptor::class.java)
+            val logger = LoggerFactory.getLogger(ClientAcceptor::class.java)
         }
 
         override fun fireAndForget(

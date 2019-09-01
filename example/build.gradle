@@ -30,7 +30,7 @@ dependencies {
     implementation 'io.rsocket.kotlin:rsocket-transport-okhttp'
     implementation 'io.rsocket.kotlin:rsocket-transport-netty'
     implementation 'org.slf4j:slf4j-api'
-    implementation 'org.slf4j:slf4j-simple'
+    implementation 'org.slf4j:slf4j-log4j12'
 }
 
 def protocPluginBaseName = "rsocket-rpc-protobuf-${osdetector.os}-${osdetector.arch}"
