@@ -166,6 +166,6 @@ artifacts {
         classifier osdetector.os + "-" + osdetector.arch
         type "exe"
         extension "exe"
-        builtBy buildArtifacts
+        builtBy 'buildArtifacts'
     }
 }

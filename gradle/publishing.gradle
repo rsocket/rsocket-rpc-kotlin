@@ -30,7 +30,7 @@ subprojects {
                         def pathToPlugin = "${artifactStagingPath.getPath()}/${pluginName}"
                         artifact(pathToPlugin) {
                             classifier osdetector.os + "-" + osdetector.arch
-                            builtBy buildArtifacts
+                            builtBy 'buildArtifacts'
                         }
                     } else {
                         artifact sourcesJar

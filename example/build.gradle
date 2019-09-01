@@ -3,7 +3,6 @@ import static org.apache.tools.ant.taskdefs.condition.Os.isFamily
 
 plugins {
     id 'com.google.protobuf'
-    id 'kotlin'
     id 'application'
     id 'idea'
 }
@@ -12,13 +11,6 @@ description = 'Example of using RSocket-kotlin RPC Library'
 
 application {
     mainClassName = "io.rsocket.rpc.kotlin.example.RpcExample"
-}
-
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.6"
-}
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.6"
 }
 
 dependencies {
