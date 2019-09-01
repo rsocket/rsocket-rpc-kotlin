@@ -29,30 +29,6 @@ def pluginName = "${pluginPrefix}.exe"
 def artifactStagingPath = "$buildDir/artifacts" as File
 def pathToPlugin = "${artifactStagingPath.getPath()}/${pluginName}"
 
-protobuf {
-    generatedFilesBaseDir = "${projectDir}/src/generated"
-
-    protoc {
-        artifact = "com.google.protobuf:protoc"
-    }
-
-    plugins {
-        rsocketRpc {
-            path = pathToPlugin
-        }
-    }
-    generateProtoTasks {
-        all().each { task ->
-            task.dependsOn ':rsocket-rpc-protobuf:kotlin_pluginExecutable'
-            task.inputs.file "$pathToPlugin"
-            task.inputs.file "${rootProject.projectDir}/build.gradle"
-            task.plugins {
-                rsocketRpc {}
-            }
-        }
-    }
-}
-
 // Adds space-delimited arguments from the environment variable env to the
 // argList.
 def addEnvArgs = { env, argList ->
@@ -184,11 +160,6 @@ task buildArtifacts(type: Copy) {
 }
 
 compileJava.dependsOn ':rsocket-rpc-protobuf:buildArtifacts'
-compileJava.dependsOn ':rsocket-rpc-protobuf:generateProto'
-
-clean {
-    delete protobuf.generatedFilesBaseDir
-}
 
 artifacts {
     archives("$pathToPlugin" as File) {

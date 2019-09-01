@@ -7,6 +7,7 @@ com.squareup.okhttp3:okhttp:3.11.0
 com.squareup.okio:okio:1.14.0
 io.netty:netty-buffer:4.1.37.Final
 io.netty:netty-common:4.1.37.Final
+io.opentracing:opentracing-api:0.31.0
 io.reactivex.rxjava2:rxjava:2.2.2
 io.rsocket.kotlin:rsocket-core:0.9.6
 io.rsocket.kotlin:rsocket-transport-netty:0.9.6
