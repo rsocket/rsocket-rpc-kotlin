@@ -17,6 +17,40 @@
 if (project.hasProperty('bintrayUser') && project.hasProperty('bintrayKey')) {
 
     subprojects {
+        plugins.withId('com.jfrog.bintray') {
+            bintray {
+                user = project.property('bintrayUser')
+                key = project.property('bintrayKey')
+
+                publications = ['maven']
+                publish = true
+                override = true
+
+                pkg {
+                    repo = 'RSocket'
+                    name = 'rsocket-rpc-kotlin'
+                    licenses = ['Apache-2.0']
+
+                    issueTrackerUrl = 'https://github.com/rsocket/rsocket-rpc-kotlin/issues'
+                    websiteUrl = 'https://github.com/rsocket/rsocket-rpc-kotlin'
+                    vcsUrl = 'https://github.com/rsocket/rsocket-rpc-kotlin.git'
+
+                    githubRepo = 'rsocket/rsocket-rpc-kotlin' //Optional Github repository
+                    githubReleaseNotesFile = 'README.md' //Optional Github readme file
+
+                    version {
+                        name = project.version
+                        released = new Date()
+                        vcsTag = project.version
+
+                        gpg {
+                            sign = true
+                        }
+                    }
+                }
+            }
+        }
+
         plugins.withId('com.jfrog.artifactory') {
             artifactory {
                 publish {

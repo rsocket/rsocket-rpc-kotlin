@@ -1,0 +1,29 @@
+subprojects {
+    apply plugin: 'io.spring.dependency-management'
+
+    dependencyManagement {
+        dependencies {
+            dependency "javax.inject:javax.inject:${javaxInjectVersion}"
+            dependency "javax.annotation:javax.annotation-api:${javaxAnnotationVersion}"
+            dependency "io.netty:netty-buffer:${nettyBufferVersion}"
+            dependency "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinStdlibVersion}"
+            dependency "com.gojuno.koptional:koptional:${koptionalVersion}"
+            dependency "com.google.protobuf:protobuf-java:${protobufVersion}"
+            dependency "com.google.protobuf:protoc:${protobufVersion}"
+            dependency "io.rsocket.kotlin:rsocket-core:${rsocketKotlinVersion}"
+            dependency "io.opentracing:opentracing-api:${opentracingVersion}"
+            dependency "org.slf4j:slf4j-api:${slf4jApiVersion}"
+            dependency "org.slf4j:slf4j-log4j12:${slf4jLog4jVersion}"
+
+            /*testing*/
+            dependency "io.rsocket.kotlin:rsocket-transport-okhttp:${rsocketKotlinVersion}"
+            dependency "io.rsocket.kotlin:rsocket-transport-netty:${rsocketKotlinVersion}"
+            dependency "org.assertj:assertj-core:${assertjVersion}"
+            dependencySet(group: "org.junit.jupiter", version: "${junit5Version}") {
+                entry "junit-jupiter-api"
+                entry "junit-jupiter-engine"
+                entry "junit-jupiter-params"
+            }
+        }
+    }
+}

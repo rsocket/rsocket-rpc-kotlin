@@ -17,11 +17,12 @@
 import static org.apache.tools.ant.taskdefs.condition.Os.*
 
 plugins {
-    id 'com.google.protobuf' version '0.8.7'
+    id 'com.google.protobuf'
     id 'idea'
     id 'kotlin'
-    id 'com.jfrog.artifactory' version '4.7.3'
-    id 'com.jfrog.bintray' version '1.8.4'
+    id 'com.jfrog.artifactory'
+    id 'com.jfrog.bintray'
+    id 'maven-publish'
 }
 
 description = 'RSocket-kotlin RPC Library'
@@ -34,17 +35,15 @@ compileTestKotlin {
 }
 
 dependencies {
-    compileOnly project (':rsocket-rpc-protobuf')
-    protobuf project (':rsocket-rpc-protobuf-idl')
-
+    api 'io.opentracing:opentracing-api'
     api 'io.rsocket.kotlin:rsocket-core'
     api 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
     api 'com.gojuno.koptional:koptional'
     api 'com.google.protobuf:protobuf-java'
     api 'javax.inject:javax.inject'
     api 'javax.annotation:javax.annotation-api'
-    compileOnly 'io.opentracing:opentracing-api'
 
+    testProtobuf project (':rsocket-rpc-protobuf-idl')
     testImplementation 'io.rsocket.kotlin:rsocket-transport-okhttp'
     testImplementation 'io.rsocket.kotlin:rsocket-transport-netty'
     testImplementation 'io.opentracing:opentracing-api'
@@ -71,7 +70,7 @@ protobuf {
     generatedFilesBaseDir = "${projectDir}/src/generated"
 
     protoc {
-        artifact = "com.google.protobuf:protoc:$protobufVersion"
+        artifact = "com.google.protobuf:protoc"
     }
     plugins {
 
@@ -94,13 +93,16 @@ protobuf {
     }
 }
 
+clean {
+    delete protobuf.generatedFilesBaseDir
+}
+
 idea {
     module {
-        sourceDirs += file("src/main/proto")
-        sourceDirs += file("src/generated/main/java")
-        sourceDirs += file("src/generated/main/rsocketRpc")
+        sourceDirs += file("src/generated/test/java")
+        sourceDirs += file("src/generated/test/rsocketRpc")
 
-        generatedSourceDirs += file('src/generated/main/java')
-        generatedSourceDirs += file('src/generated/main/rsocketRpc')
+        generatedSourceDirs += file("src/generated/test/java")
+        generatedSourceDirs += file("src/generated/test/rsocketRpc")
     }
 }

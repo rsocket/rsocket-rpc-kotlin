@@ -4,7 +4,7 @@ jobs:
   - stage: build
     language: cpp
     os: linux
-    jdk: oraclejdk8
+    jdk: openjdk8
     before_install:
     - wget https://github.com/google/protobuf/releases/download/v3.6.1/protobuf-cpp-3.6.1.tar.gz
     - tar -xzvf protobuf-cpp-3.6.1.tar.gz
@@ -15,13 +15,14 @@ jobs:
   - stage: build
     language: cpp
     os: windows
+    filter_secrets: false
     env:
     - GRADLE_OPTS="-Dorg.gradle.daemon=false"
     before_install:
     - rm -r "/c/Program Files (x86)/Microsoft Visual Studio 14.0"
     - export PATH=$PATH:"/c/Program Files (x86)/Microsoft Visual Studio/2017/BuildTools/VC/Tools/MSVC/14.16.27023/bin/HostX86/x64"
-    - choco install -y jdk8 --version 8.0.201
-    - export PATH=$PATH:"/c/Program Files/Java/jdk1.8.0_201/bin"
+    - choco install -y adoptopenjdk8
+    - export PATH=$PATH:"/c/Program Files/AdoptOpenJDK/jdk8u222-b10/bin"
     - wget https://github.com/google/protobuf/releases/download/v3.6.1/protobuf-cpp-3.6.1.tar.gz
     - tar -xzf protobuf-cpp-3.6.1.tar.gz
     - pushd protobuf-3.6.1/cmake
@@ -33,16 +34,18 @@ jobs:
   - stage: deploy
     language: cpp
     os: osx
-    osx_image: xcode9.4
-    env:
-    - HOMEBREW_TEMP="/tmp"
-    - LDFLAGS="/usr/local/lib/libprotobuf.a /usr/local/lib/libprotoc.a"
+    osx_image: xcode10.1
+    compiler: clang
     before_install:
-    - brew update
-    - EDITOR="sed -i '' 's/system \".\/configure\",/system \".\/configure\", \"--disable-shared\",/g'"
-      brew edit protobuf
-    - brew install protobuf
+    - curl -O -L https://github.com/google/protobuf/releases/download/v3.6.1/protobuf-cpp-3.6.1.tar.gz
+    - tar -xzf protobuf-cpp-3.6.1.tar.gz
+    - pushd protobuf-3.6.1
+    - ./autogen.sh
+    - ./configure --disable-shared && make && sudo make install
+    - popd
     script: "./ci/travis.sh"
+notifications:
+  email: false
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
 cache:

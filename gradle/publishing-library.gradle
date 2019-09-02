@@ -14,26 +14,25 @@
  * limitations under the License.
  */
 
-plugins {
-    id 'com.google.protobuf'
-    id 'com.jfrog.artifactory'
-    id 'com.jfrog.bintray'
-    id 'maven-publish'
-    id 'idea'
-}
+subprojects {
 
-description = 'RSocket RPC Protobuf IDL'
+    apply from: '../gradle/publishing-pom.gradle'
 
-protobuf {
-    generateProtoTasks {
-        all().each { task ->
-            task.enabled = false
+    if (project.name != 'rsocket-rpc-protobuf') {
+        plugins.withType(MavenPublishPlugin) {
+            publishing {
+                publications {
+                    maven(MavenPublication) {
+                        groupId project.group
+
+                        from components.java
+
+                        artifact sourcesJar
+
+                        configurePom(pom)
+                    }
+                }
+            }
         }
-    }
-}
-
-idea {
-    module {
-        sourceDirs += file("src/main/proto")
     }
 }
