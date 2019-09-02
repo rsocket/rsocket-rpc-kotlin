@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-/*
 package io.rsocket.rpc.kotlin.util
 
 import org.junit.jupiter.api.Test
@@ -24,4 +23,4 @@ import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable
 @Retention(AnnotationRetention.RUNTIME)
 @EnabledIfEnvironmentVariable(named = "RSOCKET_RPC_LONG_TEST_ENABLED", matches = "(?i)true")
 @Test
-annotation class LongTest*/
+annotation class LongTest

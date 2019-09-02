@@ -1,5 +1,4 @@
 plugins {
-    id 'com.google.protobuf'
     id 'idea'
 }
 

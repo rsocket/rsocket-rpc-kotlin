@@ -1,0 +1,91 @@
+/*
+ * Copyright 2015-2018 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import static org.apache.tools.ant.taskdefs.condition.Os.FAMILY_WINDOWS
+import static org.apache.tools.ant.taskdefs.condition.Os.isFamily
+
+plugins {
+    id 'idea'
+}
+
+description = 'RSocket-kotlin RPC testing & internal websocket support'
+
+dependencies {
+    api 'io.projectreactor.netty:reactor-netty'
+    implementation project(":rsocket-rpc-core")
+
+    testProtobuf project (':rsocket-rpc-protobuf-idl')
+
+    testImplementation 'io.rsocket.kotlin:rsocket-transport-okhttp'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+def protocPluginBaseName = "rsocket-rpc-protobuf-${osdetector.os}-${osdetector.arch}"
+def kotlinPluginPath = "$rootDir/rsocket-rpc-protobuf/build/exe/kotlin_plugin/$protocPluginBaseName"
+
+if(isFamily(FAMILY_WINDOWS)){
+    kotlinPluginPath = kotlinPluginPath + ".exe"
+}
+
+protobuf {
+    generatedFilesBaseDir = "${projectDir}/src/generated"
+
+    protoc {
+        artifact = "com.google.protobuf:protoc"
+    }
+    plugins {
+
+        rsocketRpcKotlin {
+            path = kotlinPluginPath
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.dependsOn ':rsocket-rpc-protobuf:kotlin_pluginExecutable'
+            // Recompile protos when the codegen has been changed
+            task.inputs.file kotlinPluginPath
+            // Recompile protos when build.gradle has been changed, because
+            // it's possible the version of protoc has been changed.
+            task.inputs.file "${rootProject.projectDir}/build.gradle"
+            task.plugins {
+                rsocketRpcKotlin {}
+            }
+        }
+    }
+}
+
+clean {
+    delete protobuf.generatedFilesBaseDir
+}
+
+idea {
+    module {
+        sourceDirs += file("src/generated/test/java")
+        sourceDirs += file("src/generated/test/rsocketRpcKotlin")
+
+        generatedSourceDirs += file("src/generated/test/java")
+        generatedSourceDirs += file("src/generated/test/rsocketRpcKotlin")
+    }
+}

@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-/*
 package io.rsocket.rpc.kotlin
 
 import io.netty.buffer.ByteBuf
@@ -28,10 +27,10 @@ import io.reactivex.subscribers.TestSubscriber
 import io.rsocket.kotlin.Duration
 import io.rsocket.kotlin.RSocketFactory
 import io.rsocket.kotlin.exceptions.ApplicationException
-import io.rsocket.kotlin.transport.netty.server.NettyContextCloseable
-import io.rsocket.kotlin.transport.netty.server.WebsocketServerTransport
 import io.rsocket.rpc.kotlin.rsocket.RequestHandlingRSocket
 import io.rsocket.rpc.kotlin.test.*
+import io.rsocket.rpc.kotlin.transport.internal.netty.server.CloseableChannel
+import io.rsocket.rpc.kotlin.transport.internal.netty.server.InternalWebsocketServerTransport
 import io.rsocket.rpc.kotlin.util.LongTest
 import io.rsocket.transport.okhttp.client.OkhttpWebsocketClientTransport
 import okhttp3.HttpUrl
@@ -230,7 +229,7 @@ class InteractionsTest {
         const val expectedMessage = "test"
 
         lateinit var testClient: TestServiceClient
-        private lateinit var context: NettyContextCloseable
+        private lateinit var server: CloseableChannel
         internal lateinit var clientAcceptor: ClientAcceptor
 
         @JvmStatic
@@ -263,7 +262,7 @@ class InteractionsTest {
         internal fun setUp() {
             ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.ADVANCED)
 
-            context = RSocketFactory.receive()
+            server = RSocketFactory.receive()
                 .acceptor {
                     { _, rSocket ->
                         Single.just(
@@ -272,11 +271,11 @@ class InteractionsTest {
                             )
                         )
                     }
-                }.transport(WebsocketServerTransport.create("localhost", 0)).start()
+                }.transport(InternalWebsocketServerTransport.create("localhost", 0)).start()
                 .timeout(5, TimeUnit.SECONDS)
                 .blockingGet()
 
-            val address = context.address()
+            val address = server.address()
 
             val url = HttpUrl.Builder()
                 .scheme("http")
@@ -304,7 +303,7 @@ class InteractionsTest {
         @AfterAll
         @JvmStatic
         internal fun tearDown() {
-            context
+            server
                 .close()
                 .blockingAwait(5, TimeUnit.SECONDS)
         }
@@ -386,4 +385,4 @@ private class ServerAcceptor(
             .newBuilder()
             .setMessage(request.message)
             .build()
-}*/
+}

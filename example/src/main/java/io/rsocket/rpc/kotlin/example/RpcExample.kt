@@ -5,9 +5,9 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.rsocket.kotlin.RSocketFactory
-import io.rsocket.kotlin.transport.netty.server.WebsocketServerTransport
 import io.rsocket.rpc.kotlin.example.protos.*
 import io.rsocket.rpc.kotlin.rsocket.RequestHandlingRSocket
+import io.rsocket.rpc.kotlin.transport.internal.netty.server.InternalWebsocketServerTransport
 import io.rsocket.transport.okhttp.client.OkhttpWebsocketClientTransport
 import okhttp3.HttpUrl
 import org.reactivestreams.Publisher
@@ -31,7 +31,7 @@ class RpcExample {
                         )
                     }
                     /*transport is pluggable*/
-                }.transport(WebsocketServerTransport.create("localhost", 0))
+                }.transport(InternalWebsocketServerTransport.create("localhost", 0))
                 .start()
                 .timeout(5, TimeUnit.SECONDS)
                 .blockingGet()

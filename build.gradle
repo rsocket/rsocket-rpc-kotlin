@@ -19,6 +19,7 @@ plugins {
     id 'com.google.osdetector'
     id 'com.palantir.git-version'
     id 'com.gradle.build-scan'
+    id 'com.google.protobuf' apply false
     id 'com.github.johnrengelman.shadow' apply false
     id 'org.jetbrains.kotlin.jvm' apply false
     id 'io.spring.dependency-management' apply false
@@ -38,6 +39,7 @@ allprojects {
 subprojects {
     apply plugin: 'java-library'
     apply plugin: 'org.jetbrains.kotlin.jvm'
+    apply plugin: 'com.google.protobuf'
 
     repositories {
         mavenCentral()
