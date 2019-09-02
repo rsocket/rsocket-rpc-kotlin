@@ -111,13 +111,13 @@ class RpcExample {
 
         override fun streamRequest(message: Publisher<Request>, metadata: ByteBuf): Single<Response> =
             Flowable.fromPublisher(message)
-                .doOnNext { m -> logger.info("Server acceptor received client streaming message") }
+                .doOnNext { _ -> logger.info("Server acceptor received client streaming message") }
                 .lastOrError()
                 .map { m -> Response.newBuilder().setMessage(m.message).build() }
 
         override fun channel(message: Publisher<Request>, metadata: ByteBuf): Flowable<Response> =
             Flowable.fromPublisher(message)
-                .doOnNext { m -> logger.info("Server acceptor received channel message") }
+                .doOnNext { _ -> logger.info("Server acceptor received channel message") }
                 .map { m -> response(m.message) }
 
         override fun fireAndForget(message: Request, metadata: ByteBuf): Completable =
