@@ -20,6 +20,7 @@ import io.reactivex.Single
 import io.rsocket.kotlin.transport.ServerTransport
 import io.rsocket.kotlin.transport.TransportHeaderAware
 import io.rsocket.rpc.kotlin.transport.internal.netty.InternalWebsocketDuplexConnection
+import io.rsocket.rpc.kotlin.transport.internal.netty.frameLengthMask
 import io.rsocket.rpc.kotlin.transport.internal.netty.toSingle
 import reactor.netty.Connection
 import reactor.netty.http.server.HttpServer
@@ -35,7 +36,7 @@ class InternalWebsocketServerTransport private constructor(internal var server: 
                     transportHeaders()
                             .forEach { (name, value) -> response.addHeader(name, value) }
                     response.sendWebsocket(null,
-                        FRAME_LENGTH_MASK
+                        frameLengthMask
                     ) { inbound, outbound ->
                         val connection =
                             InternalWebsocketDuplexConnection(inbound as Connection)
@@ -49,7 +50,6 @@ class InternalWebsocketServerTransport private constructor(internal var server: 
     }
 
     companion object {
-        private const val FRAME_LENGTH_MASK = 0xFFFFFF
 
         fun create(bindAddress: String, port: Int): InternalWebsocketServerTransport {
             val httpServer = HttpServer.create().host(bindAddress).port(port)
