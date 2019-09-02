@@ -16,7 +16,6 @@
 
 plugins {
     id 'cpp'
-    id 'com.google.protobuf'
     id 'com.jfrog.artifactory'
     id 'com.jfrog.bintray'
     id 'maven-publish'
