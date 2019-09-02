@@ -4,7 +4,7 @@ jobs:
   - stage: build
     language: cpp
     os: linux
-    jdk: oraclejdk8
+    jdk: openjdk8
     before_install:
     - wget https://github.com/google/protobuf/releases/download/v3.6.1/protobuf-cpp-3.6.1.tar.gz
     - tar -xzvf protobuf-cpp-3.6.1.tar.gz

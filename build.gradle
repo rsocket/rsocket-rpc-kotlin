@@ -17,21 +17,22 @@
 plugins {
     // declare before any other plugin
     id 'com.google.osdetector'
+    id 'com.palantir.git-version'
     id 'com.gradle.build-scan'
     id 'com.github.johnrengelman.shadow' apply false
     id 'org.jetbrains.kotlin.jvm' apply false
     id 'io.spring.dependency-management' apply false
 }
 
-buildScan {
-    termsOfServiceUrl = 'https://gradle.com/terms-of-service'
-    termsOfServiceAgree = 'yes'
-}
+def versionSuffix = versionSuffix()
 
 allprojects {
     dependencyLocking {
         lockAllConfigurations()
     }
+
+    project.version += versionSuffix
+    println "version: ${project.version}"
 }
 
 subprojects {
@@ -76,3 +77,33 @@ subprojects {
 apply from: 'gradle/publishing.gradle'
 apply from: 'gradle/bintray.gradle'
 apply from: 'gradle/dependency-management.gradle'
+
+buildScan {
+    termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+    termsOfServiceAgree = 'yes'
+}
+
+def versionSuffix() {
+    def versionSuffix
+    def branchName = project.findProperty('branch');
+    if (branchName == null) {
+        def details = versionDetails()
+        if (details != null) {
+            branchName = details.branchName
+        }
+    }
+    /*branch*/
+    if (branchName != null) {
+        if (branchName == 'master') {
+            versionSuffix = ''
+        } else if (branchName == 'develop') {
+            versionSuffix = '-SNAPSHOT'
+        } else {
+            versionSuffix = "-${branchName.replace("/", "-")}-SNAPSHOT"
+        }
+        /*tag*/
+    } else {
+        versionSuffix = ''
+    }
+    return versionSuffix
+}
