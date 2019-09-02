@@ -40,6 +40,7 @@ subprojects {
     apply plugin: 'org.jetbrains.kotlin.jvm'
 
     repositories {
+        mavenCentral()
         jcenter()
         maven { url 'https://oss.jfrog.org/oss-release-local' }
     }
