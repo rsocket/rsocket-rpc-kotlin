@@ -166,6 +166,8 @@ artifacts {
         classifier osdetector.os + "-" + osdetector.arch
         type "exe"
         extension "exe"
-        builtBy 'buildArtifacts'
+        builtBy buildArtifacts
     }
 }
+
+apply from: '../gradle/publishing-compiler.gradle'

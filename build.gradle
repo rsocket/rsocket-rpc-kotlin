@@ -74,7 +74,7 @@ subprojects {
     }
 }
 
-apply from: 'gradle/publishing.gradle'
+apply from: 'gradle/publishing-library.gradle'
 apply from: 'gradle/bintray.gradle'
 apply from: 'gradle/dependency-management.gradle'
 
