@@ -35,15 +35,15 @@ class RequestHandlingRSocket(vararg services: RSocketRpcService) : AbstractRSock
     private val registeredServices = ConcurrentHashMap<String, RSocketRpcService>()
 
     init {
-        for (proteusService in services) {
-            val service = proteusService.service
-            registeredServices[service] = proteusService
+        for (rSocketRpcService in services) {
+            val service = rSocketRpcService.service
+            registeredServices[service] = rSocketRpcService
         }
     }
 
-    fun addService(proteusService: RSocketRpcService) {
-        val service = proteusService.service
-        registeredServices[service] = proteusService
+    fun addService(rSocketRpcService: RSocketRpcService) {
+        val service = rSocketRpcService.service
+        registeredServices[service] = rSocketRpcService
     }
 
     override fun fireAndForget(payload: Payload): Completable {
@@ -51,14 +51,14 @@ class RequestHandlingRSocket(vararg services: RSocketRpcService) : AbstractRSock
             val metadata = payload.byteBufMetadata()
             val service = Metadata.getService(metadata)
 
-            val proteusService = registeredServices[service]
+            val rSocketRpcService = registeredServices[service]
 
-            if (proteusService == null) {
+            if (rSocketRpcService == null) {
                 ReferenceCountUtil.safeRelease(payload)
                 return Completable.error(ServiceNotFound(service))
             }
 
-            return proteusService.fireAndForget(payload)
+            return rSocketRpcService.fireAndForget(payload)
         } catch (t: Throwable) {
             ReferenceCountUtil.safeRelease(payload)
             return Completable.error(t)
@@ -71,13 +71,13 @@ class RequestHandlingRSocket(vararg services: RSocketRpcService) : AbstractRSock
             val metadata = payload.byteBufMetadata()
             val service = Metadata.getService(metadata)
 
-            val proteusService = registeredServices[service]
+            val rSocketRpcService = registeredServices[service]
 
-            if (proteusService == null) {
+            if (rSocketRpcService == null) {
                 ReferenceCountUtil.safeRelease(payload)
                 return Single.error(ServiceNotFound(service))
             } else {
-                return proteusService.requestResponse(payload)
+                return rSocketRpcService.requestResponse(payload)
             }
         } catch (t: Throwable) {
             ReferenceCountUtil.safeRelease(payload)
@@ -90,14 +90,14 @@ class RequestHandlingRSocket(vararg services: RSocketRpcService) : AbstractRSock
             val metadata = payload.byteBufMetadata()
             val service = Metadata.getService(metadata)
 
-            val proteusService = registeredServices[service]
+            val rSocketRpcService = registeredServices[service]
 
-            if (proteusService == null) {
+            if (rSocketRpcService == null) {
                 ReferenceCountUtil.safeRelease(payload)
                 return Flowable.error(ServiceNotFound(service))
             }
 
-            return proteusService.requestStream(payload)
+            return rSocketRpcService.requestStream(payload)
         } catch (t: Throwable) {
             ReferenceCountUtil.safeRelease(payload)
             return Flowable.error(t)
@@ -111,12 +111,12 @@ class RequestHandlingRSocket(vararg services: RSocketRpcService) : AbstractRSock
             try {
                 val metadata = payload.byteBufMetadata()
                 val service = Metadata.getService(metadata)
-                val proteusService = registeredServices[service]
-                if (proteusService == null) {
+                val rSocketRpcService = registeredServices[service]
+                if (rSocketRpcService == null) {
                     ReferenceCountUtil.safeRelease(payload)
                     Flowable.error(ServiceNotFound(service))
                 } else {
-                    proteusService.requestChannel(payload, flow)
+                    rSocketRpcService.requestChannel(payload, flow)
                 }
             } catch (t: Throwable) {
                 ReferenceCountUtil.safeRelease(payload)

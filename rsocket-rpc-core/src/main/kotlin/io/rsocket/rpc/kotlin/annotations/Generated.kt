@@ -19,7 +19,7 @@ package io.rsocket.rpc.kotlin.annotations
 import kotlin.reflect.KClass
 
 /**
- * Annotation that identifies proteus generated services and stores metadata that can
+ * Annotation that identifies RSocketRpc generated services and stores metadata that can
  * be used by dependency injection frameworks and custom annotation processors.
  */
 @Annotation
@@ -27,7 +27,7 @@ import kotlin.reflect.KClass
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Generated(
     /**
-     * Type of the generated Proteus resource.
+     * Type of the generated RSocketRpc resource.
      *
      * @return type of generated resource
      */
