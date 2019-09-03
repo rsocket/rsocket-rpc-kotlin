@@ -397,7 +397,7 @@ static void PrintClient(const ServiceDescriptor* service,
       p->Print(
             *vars,
       "private val rSocket: $RSocket$, \n"
-      "tracer: $Optional$.Optional<$Tracer$> = $Optional$.None\n"
+      "private val tracer: $Tracer$? = null\n"
       "): $service_name$ {\n"
       );
   p->Indent();
@@ -439,7 +439,7 @@ static void PrintClient(const ServiceDescriptor* service,
   p->Print("when(tracer) {\n");
   p->Indent();
   p->Print(*vars,
-  "is $Optional$.None -> {\n" );
+  "null -> {\n" );
   p->Indent();
 
   // Tracing metrics
@@ -458,7 +458,7 @@ static void PrintClient(const ServiceDescriptor* service,
   // RSocket and Tracing
   p->Print(
       *vars,
-      "is $Optional$.Some -> {\n");
+      "else -> {\n");
   p->Indent();
 
   // Tracing metrics
@@ -473,7 +473,7 @@ static void PrintClient(const ServiceDescriptor* service,
     p->Indent();
     p->Print(
         *vars,
-        "tracer.value,\n"
+        "tracer,\n"
         "$service_name$.$method_field_name$,\n"
         "$Tag$.of(\"rsocket.service\", $service_name$.$service_field_name$),\n"
         "$Tag$.of(\"rsocket.type\", \"client\"),\n"
@@ -864,9 +864,8 @@ static void PrintServer(const ServiceDescriptor* service,
   p->Print(
       *vars,
       "private val serviceImpl: $service_name$,\n"
-      "tracer: $Optional$.Optional<$Tracer$> = $Optional$.None)\n"
-      ": $AbstractRSocketService$() {\n"
-      "private val tracer: $Tracer$?\n");
+      "private val tracer: $Tracer$? = null)\n"
+      ": $AbstractRSocketService$() {\n");
 
   // Tracing
   for (int i = 0; i < service->method_count(); ++i) {
@@ -904,13 +903,9 @@ p->Indent();
 // if tracing present {
     p->Print(
         *vars,
-        "is $Optional$.None -> {\n"
+        "null -> {\n"
     );
     p->Indent();
-    p->Print(
-        *vars,
-        "this.tracer = null\n"
-    );
     for (int i = 0; i < service->method_count(); ++i) {
       const MethodDescriptor* method = service->method(i);
       (*vars)["lower_method_name"] = LowerMethodName(method);
@@ -925,13 +920,9 @@ p->Indent();
     p->Print("}\n");
     p->Print(
             *vars,
-            "is $Optional$.Some -> {\n"
+            "else -> {\n"
         );
     p->Indent();
-    p->Print(
-        *vars,
-        "this.tracer = tracer.value\n"
-    );
     for (int i = 0; i < service->method_count(); ++i) {
       const MethodDescriptor* method = service->method(i);
       (*vars)["lower_method_name"] = LowerMethodName(method);
@@ -943,7 +934,7 @@ p->Indent();
       p->Indent();
       p->Print(
           *vars,
-          "this.tracer,\n"
+          "tracer,\n"
            "$service_name$.$method_field_name$,\n"
            "$Tag$.of(\"rsocket.service\", $service_name$.$service_field_name$),\n"
            "$Tag$.of(\"rsocket.type\", \"server\"),\n"
@@ -1387,7 +1378,6 @@ void GenerateClient(const ServiceDescriptor* service,
   vars["HashMap"] = "java.util.HashMap";
   vars["Supplier"] = "java.util.concurrent.Callable";
   vars["Empty"] = "com.google.protobuf.Empty";
-  vars["Optional"] = "com.gojuno.koptional";
 
   Printer printer(out, '$');
   string package_name = ServiceKotlinPackage(service->file());
@@ -1440,7 +1430,6 @@ void GenerateServer(const ServiceDescriptor* service,
   vars["CodedOutputStream"] = "com.google.protobuf.CodedOutputStream";
   vars["MessageLite"] = "com.google.protobuf.MessageLite";
   vars["Parser"] = "com.google.protobuf.Parser";
-  vars["Optional"] = "com.gojuno.koptional";
   vars["Inject"] = "javax.inject.Inject";
   vars["Unpooled"] = "io.netty.buffer.Unpooled";
   vars["Named"] = "javax.inject.Named";

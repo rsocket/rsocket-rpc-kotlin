@@ -7,7 +7,6 @@ subprojects {
             dependency "javax.annotation:javax.annotation-api:${javaxAnnotationVersion}"
             dependency "io.netty:netty-buffer:${nettyBufferVersion}"
             dependency "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinStdlibVersion}"
-            dependency "com.gojuno.koptional:koptional:${koptionalVersion}"
             dependency "com.google.protobuf:protobuf-java:${protobufVersion}"
             dependency "com.google.protobuf:protoc:${protobufVersion}"
             dependency "io.rsocket.kotlin:rsocket-core:${rsocketKotlinVersion}"

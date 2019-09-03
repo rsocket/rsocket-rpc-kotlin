@@ -25,7 +25,6 @@ description = 'RSocket-kotlin RPC Library'
 dependencies {
     api 'io.opentracing:opentracing-api'
     api 'io.rsocket.kotlin:rsocket-core'
-    api 'com.gojuno.koptional:koptional'
     api 'com.google.protobuf:protobuf-java'
     api 'javax.inject:javax.inject'
     api 'javax.annotation:javax.annotation-api'
