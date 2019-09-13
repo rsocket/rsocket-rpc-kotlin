@@ -1,4 +1,4 @@
-# RSocket RPC - Kotlin & RxJava2
+# RSOCKET RPC - KOTLIN
 [![Build Status](https://travis-ci.com/rsocket/rsocket-rpc-kotlin.svg?branch=develop)](https://travis-ci.com/rsocket/rsocket-rpc-kotlin)
 
 The standard [RSocket](http://rsocket.io) RPC implementation based on [RSocket-kotlin](https://github.com/rsocket/rsocket-kotlin), [RxJava2](https://github.com/ReactiveX/RxJava) and [Protocol Buffers](https://github.com/protocolbuffers/protobuf).  
