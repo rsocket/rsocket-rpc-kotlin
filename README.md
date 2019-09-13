@@ -1,4 +1,4 @@
-![Reactive Foundation](https://raw.githubusercontent.com/reactivefoundation/artwork/master/rf/SVG/reactivefoundation-stacked-color.svg) ![RSocket](https://raw.githubusercontent.com/rsocket/rsocket-artwork/master/rsocket-horizontal-logo/SVG/r-socket-horizontal-pink.svg)
+![Reactive Foundation](https://github.com/reactivefoundation/artwork/blob/master/rf/PNG/reactivefoundation-horizontal-color.png) ![RSocket](https://raw.githubusercontent.com/rsocket/rsocket-artwork/master/rsocket-horizontal-logo/SVG/r-socket-horizontal-pink.svg)
 
 # RSocket RPC - Kotlin & RxJava2
 [![Build Status](https://travis-ci.com/rsocket/rsocket-rpc-kotlin.svg?branch=develop)](https://travis-ci.com/rsocket/rsocket-rpc-kotlin)
