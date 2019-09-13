@@ -18,6 +18,7 @@ package io.rsocket.rpc.kotlin.util
 
 import io.reactivex.Flowable
 import io.reactivex.processors.UnicastProcessor
+import io.rsocket.kotlin.DefaultPayload
 import io.rsocket.kotlin.Payload
 import org.reactivestreams.Publisher
 
@@ -29,23 +30,22 @@ class StreamSplitter {
         fun split(p: Publisher<Payload>): Flowable<Split> {
             var first = true
             val rest = UnicastProcessor.create<Payload>()
-            val channelArg = UnicastProcessor.create<Split>()
 
             return Flowable.fromPublisher(p)
                     .doOnComplete { rest.onComplete() }
                     .doOnError { rest.onError(it) }
-                    .flatMap { payload ->
+                    .map { payload ->
                         if (first) {
                             first = false
-                            channelArg.onNext(Split(payload, rest))
-                            channelArg.onComplete()
-                            channelArg
+                            Split(payload, rest)
                         } else {
                             rest.onNext(payload)
-                            Flowable.empty<Split>()
+                            noopSplit
                         }
-                    }
+                    }.filter { split -> split !== noopSplit }
         }
+
+        private val noopSplit = Split(DefaultPayload("", ""), Flowable.empty())
     }
 
     data class Split(val head: Payload, val tail: Flowable<Payload>)
