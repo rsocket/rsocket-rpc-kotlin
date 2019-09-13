@@ -1,63 +1,17 @@
-import static org.apache.tools.ant.taskdefs.condition.Os.*
-
 plugins {
-    id 'com.google.protobuf' version '0.8.7'
     id 'idea'
-    id 'kotlin'
 }
 
 description = 'Example of using RSocket-kotlin RPC Library'
 
 dependencies {
-    compileOnly project (':rsocket-rpc-protobuf')
-    compileOnly 'io.opentracing:opentracing-api'
     protobuf project (':rsocket-rpc-protobuf-idl')
-    api project(":rsocket-rpc-core")
-}
-
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.6"
-}
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.6"
-}
-
-sourceSets {
-    main {
-        proto { srcDir 'src/main/proto' }
-    }
-}
-
-def protocPluginBaseName = "rsocket-rpc-protobuf-${osdetector.os}-${osdetector.arch}"
-def javaPluginPath = "$rootDir/rsocket-rpc-protobuf/build/exe/kotlin_plugin/$protocPluginBaseName"
-
-if(isFamily(FAMILY_WINDOWS)){
-    javaPluginPath = javaPluginPath + ".exe"
 }
 
 protobuf {
-    generatedFilesBaseDir = "${projectDir}/src/generated"
-
-    protoc {
-        artifact = "com.google.protobuf:protoc:$protobufVersion"
-    }
-    plugins {
-
-        rsocketRpcKotlin {
-            path = javaPluginPath
-        }
-    }
     generateProtoTasks {
         all().each { task ->
-            task.dependsOn ':rsocket-rpc-protobuf:kotlin_pluginExecutable'
-            // Recompile protos when the codegen has been changed
-            task.inputs.file javaPluginPath
-            // Recompile protos when build.gradle has been changed, because
-            // it's possible the version of protoc has been changed.
-            task.inputs.file "${rootProject.projectDir}/build.gradle"
-            task.plugins {
-                rsocketRpcKotlin {}
-            }
+            task.enabled = false
         }
     }
 }
@@ -65,10 +19,5 @@ protobuf {
 idea {
     module {
         sourceDirs += file("src/main/proto")
-        sourceDirs += file("src/generated/main/java")
-        sourceDirs += file("src/generated/main/rsocketRpcKotlin")
-
-        generatedSourceDirs += file('src/generated/main/java')
-        generatedSourceDirs += file('src/generated/main/rsocketRpcKotlin')
     }
 }

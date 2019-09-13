@@ -14,40 +14,22 @@
  * limitations under the License.
  */
 
-import static org.apache.tools.ant.taskdefs.condition.Os.*
-
 plugins {
-    id 'com.google.protobuf' version '0.8.7'
-    id 'idea'
-    id 'kotlin'
-    id 'com.jfrog.artifactory' version '4.7.3'
-    id 'com.jfrog.bintray' version '1.8.4'
+    id 'com.jfrog.artifactory'
+    id 'com.jfrog.bintray'
+    id 'maven-publish'
 }
 
 description = 'RSocket-kotlin RPC Library'
 
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.6"
-}
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.6"
-}
-
 dependencies {
-    compileOnly project (':rsocket-rpc-protobuf')
-    protobuf project (':rsocket-rpc-protobuf-idl')
-
+    api 'io.opentracing:opentracing-api'
     api 'io.rsocket.kotlin:rsocket-core'
-    api 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
-    api 'com.gojuno.koptional:koptional'
     api 'com.google.protobuf:protobuf-java'
     api 'javax.inject:javax.inject'
     api 'javax.annotation:javax.annotation-api'
-    compileOnly 'io.opentracing:opentracing-api'
+    api 'org.slf4j:slf4j-api'
 
-    testImplementation 'io.rsocket.kotlin:rsocket-transport-okhttp'
-    testImplementation 'io.rsocket.kotlin:rsocket-transport-netty'
-    testImplementation 'io.opentracing:opentracing-api'
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine'
     testImplementation 'org.junit.jupiter:junit-jupiter-params'
@@ -57,50 +39,5 @@ test {
     useJUnitPlatform()
     testLogging {
         events "passed", "skipped", "failed"
-    }
-}
-
-def protocPluginBaseName = "rsocket-rpc-protobuf-${osdetector.os}-${osdetector.arch}"
-def javaPluginPath = "$rootDir/rsocket-rpc-protobuf/build/exe/kotlin_plugin/$protocPluginBaseName"
-
-if(isFamily(FAMILY_WINDOWS)){
-    javaPluginPath = javaPluginPath + ".exe"
-}
-
-protobuf {
-    generatedFilesBaseDir = "${projectDir}/src/generated"
-
-    protoc {
-        artifact = "com.google.protobuf:protoc:$protobufVersion"
-    }
-    plugins {
-
-        rsocketRpc {
-            path = javaPluginPath
-        }
-    }
-    generateProtoTasks {
-        all().each { task ->
-            task.dependsOn ':rsocket-rpc-protobuf:kotlin_pluginExecutable'
-            // Recompile protos when the codegen has been changed
-            task.inputs.file javaPluginPath
-            // Recompile protos when build.gradle has been changed, because
-            // it's possible the version of protoc has been changed.
-            task.inputs.file "${rootProject.projectDir}/build.gradle"
-            task.plugins {
-                rsocketRpc {}
-            }
-        }
-    }
-}
-
-idea {
-    module {
-        sourceDirs += file("src/main/proto")
-        sourceDirs += file("src/generated/main/java")
-        sourceDirs += file("src/generated/main/rsocketRpc")
-
-        generatedSourceDirs += file('src/generated/main/java')
-        generatedSourceDirs += file('src/generated/main/rsocketRpc')
     }
 }

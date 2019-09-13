@@ -1,7 +1,9 @@
+import static org.apache.tools.ant.taskdefs.condition.Os.FAMILY_WINDOWS
+import static org.apache.tools.ant.taskdefs.condition.Os.isFamily
+
 plugins {
-    id 'idea'
-    id 'kotlin'
     id 'application'
+    id 'idea'
 }
 
 description = 'Example of using RSocket-kotlin RPC Library'
@@ -11,16 +13,59 @@ application {
 }
 
 dependencies {
-    implementation project(":example-idl")
+    protobuf project(":example-idl")
+
+    implementation project(":rsocket-rpc-core")
+    /*provides internal netty-based websocket server transport */
+    implementation project(":test")
+    /*provides okhttp-based websocket client transport */
     implementation 'io.rsocket.kotlin:rsocket-transport-okhttp'
-    implementation 'io.rsocket.kotlin:rsocket-transport-netty'
-    implementation 'org.slf4j:slf4j-api'
-    implementation 'org.slf4j:slf4j-simple'
+    implementation 'org.slf4j:slf4j-log4j12'
 }
 
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.6"
+def protocPluginBaseName = "rsocket-rpc-protobuf-${osdetector.os}-${osdetector.arch}"
+def kotlinPluginPath = "$rootDir/rsocket-rpc-protobuf/build/exe/kotlin_plugin/$protocPluginBaseName"
+
+if(isFamily(FAMILY_WINDOWS)){
+    kotlinPluginPath = kotlinPluginPath + ".exe"
 }
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.6"
+
+protobuf {
+    generatedFilesBaseDir = "${projectDir}/src/generated"
+
+    protoc {
+        artifact = "com.google.protobuf:protoc"
+    }
+    plugins {
+        rsocketRpcKotlin {
+            path = kotlinPluginPath
+        }
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.dependsOn ':rsocket-rpc-protobuf:kotlin_pluginExecutable'
+            // Recompile protos when the codegen has been changed
+            task.inputs.file kotlinPluginPath
+            // Recompile protos when build.gradle has been changed, because
+            // it's possible the version of protoc has been changed.
+            task.inputs.file "${rootProject.projectDir}/build.gradle"
+            task.plugins {
+                rsocketRpcKotlin {}
+            }
+        }
+    }
+}
+
+clean {
+    delete protobuf.generatedFilesBaseDir
+}
+
+idea {
+    module {
+        sourceDirs += file("src/generated/main/java")
+        sourceDirs += file("src/generated/main/rsocketRpcKotlin")
+
+        generatedSourceDirs += file("src/generated/main/java")
+        generatedSourceDirs += file("src/generated/main/rsocketRpcKotlin")
+    }
 }

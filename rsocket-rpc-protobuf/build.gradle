@@ -16,9 +16,9 @@
 
 plugins {
     id 'cpp'
-    id 'com.google.protobuf' version '0.8.7'
-    id 'com.jfrog.artifactory' version '4.7.3'
-    id 'com.jfrog.bintray' version '1.8.4'
+    id 'com.jfrog.artifactory'
+    id 'com.jfrog.bintray'
+    id 'maven-publish'
 }
 
 description = 'RSocket-kotlin RPC Protobuf Generator'
@@ -27,29 +27,6 @@ def pluginPrefix = "rsocket-rpc-protobuf-${osdetector.os}-${osdetector.arch}"
 def pluginName = "${pluginPrefix}.exe"
 def artifactStagingPath = "$buildDir/artifacts" as File
 def pathToPlugin = "${artifactStagingPath.getPath()}/${pluginName}"
-
-protobuf {
-    generatedFilesBaseDir = "${projectDir}/src/generated"
-
-    protoc {
-        artifact = "com.google.protobuf:protoc:$protobufVersion"
-    }
-    plugins {
-        rsocketRpc {
-            path = pathToPlugin
-        }
-    }
-    generateProtoTasks {
-        all().each { task ->
-            task.dependsOn ':rsocket-rpc-protobuf:kotlin_pluginExecutable'
-            task.inputs.file "$pathToPlugin"
-            task.inputs.file "${rootProject.projectDir}/build.gradle"
-            task.plugins {
-                rsocketRpc {}
-            }
-        }
-    }
-}
 
 // Adds space-delimited arguments from the environment variable env to the
 // argList.
@@ -182,11 +159,6 @@ task buildArtifacts(type: Copy) {
 }
 
 compileJava.dependsOn ':rsocket-rpc-protobuf:buildArtifacts'
-compileJava.dependsOn ':rsocket-rpc-protobuf:generateProto'
-
-clean {
-    delete protobuf.generatedFilesBaseDir
-}
 
 artifacts {
     archives("$pathToPlugin" as File) {
@@ -196,3 +168,5 @@ artifacts {
         builtBy buildArtifacts
     }
 }
+
+apply from: '../gradle/publishing-compiler.gradle'
